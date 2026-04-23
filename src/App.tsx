@@ -17,15 +17,17 @@ import {
   Image as ImageIcon,
   Zap,
   Store,
-  Calendar
+  Calendar,
+  BarChart3,
+  PenLine
 } from 'lucide-react';
 import { NICHE_MAPPING, getFallbackContent, COMMON_NICHES } from './constants';
 import { ContentIdea } from './types';
 
-type AppState = 'input' | 'loading' | 'result';
+type AppState = 'welcome' | 'input' | 'loading' | 'result';
 
 export default function App() {
-  const [state, setState] = useState<AppState>('input');
+  const [state, setState] = useState<AppState>('welcome');
   const [niche, setNiche] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [progress, setProgress] = useState(0);
@@ -85,7 +87,7 @@ export default function App() {
   };
 
   const reset = () => {
-    setState('input');
+    setState('welcome');
     setNiche('');
     setBusinessName('');
     setGeneratedContent([]);
@@ -96,11 +98,21 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 text-slate-900 font-sans selection:bg-red-100 selection:text-red-600">
+      {/* Instagram Gradient Style */}
+      <style>{`
+        .bg-instagram {
+          background: #f09433;
+          background: -moz-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+          background: -webkit-linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+          background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+          filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f09433', endColorstr='#bc1888',GradientType=1 );
+        }
+      `}</style>
       <div className="max-w-5xl mx-auto px-6 py-12 md:py-16">
         
         {/* Header */}
         <header className="flex items-center justify-between mb-12">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer" onClick={reset}>
             <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center">
               <Zap className="text-white w-6 h-6" />
             </div>
@@ -108,7 +120,7 @@ export default function App() {
           </div>
           {state === 'result' && (
             <button 
-              onClick={reset}
+              onClick={() => setState('input')}
               className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-medium"
             >
               <ChevronLeft size={20} />
@@ -118,6 +130,51 @@ export default function App() {
         </header>
 
         <AnimatePresence mode="wait">
+          {state === 'welcome' && (
+            <motion.div
+              key="welcome"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="flex flex-col items-center text-center space-y-12 py-12"
+            >
+              <div className="space-y-4">
+                <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight text-slate-900">
+                  Welcome to Social Watch
+                </h2>
+                <p className="text-slate-500 text-lg max-w-md mx-auto">
+                  Analyze your performance or start creating new content today.
+                </p>
+              </div>
+
+              <div className="w-full max-w-sm space-y-4">
+                <motion.a
+                  href="https://entreg-insta-report.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  animate={{ scale: [1, 1.03, 1] }}
+                  transition={{ 
+                    duration: 2, 
+                    repeat: Infinity, 
+                    ease: "easeInOut" 
+                  }}
+                  className="w-full py-5 bg-instagram text-white rounded-2xl font-bold flex items-center justify-center gap-3 hover:scale-[1.05] transition-all shadow-lg text-lg"
+                >
+                  <BarChart3 size={24} />
+                  Access your report
+                </motion.a>
+
+                <button
+                  onClick={() => setState('input')}
+                  className="w-full py-5 bg-white border-2 border-slate-100 text-slate-900 rounded-2xl font-bold flex items-center justify-center gap-3 hover:border-slate-300 hover:bg-slate-50 transition-all shadow-sm text-lg"
+                >
+                  <PenLine size={24} />
+                  Create your content
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {state === 'input' && (
             <motion.div
               key="input"
